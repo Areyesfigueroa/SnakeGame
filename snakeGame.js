@@ -1,6 +1,13 @@
 canvas = null;
 canvasContext = null;
 
+const DIRECTIONS = {
+    RIGHT: 'right',
+    LEFT: 'left',
+    UP: 'up',
+    DOWN: 'down',
+}
+
 const arrowKeys = {
     left: {code: 37, active: false},
     up: {code: 38, active: false},
@@ -11,14 +18,63 @@ const arrowKeys = {
 const snake = {
     posX: 100,
     posY: 100,
-    width: 20,
-    height: 20,
+    width: 50,
+    height: 50,
     unitLength: 1,
     angle: 0,
+    facingDirection: DIRECTIONS.RIGHT
 };
+
+let image = new Image();
+image.src = './snake-sprite.png';
+
+let rotateSpeed=0;
+let rotateTo=0;
+
+const setArrowKeys = (active) => {
+    for(key in arrowKeys) {
+        arrowKeys[key].active = active;
+    }
+}
 
 const moveSnakeX = (speed=5) => {
     snake.posX += speed 
+}
+
+const isSnakeRotating = () => {
+    return snake.angle !== rotateTo;
+}
+
+const rotateSnakeHead = (angleSpeed, destAngle) => {
+    // console.log(snake.angle,destAngle);
+
+    if(angleSpeed > 0) {
+        console.log("right");
+        if(snake.angle >= destAngle) {
+            snake.angle = destAngle;
+        } else {
+            snake.angle += angleSpeed;
+        }
+    } else {
+        console.log("left");
+        if(snake.angle <= destAngle) {
+            snake.angle = destAngle;
+        } else {
+            snake.angle += angleSpeed;
+        }
+    }
+
+
+
+
+    //Rotate Snake Head
+    canvasContext.save();
+    canvasContext.translate(snake.width/2 + snake.posX, snake.height/2 + snake.posY);
+    canvasContext.rotate(Math.PI/180 * snake.angle);
+
+    //Snake Head
+    canvasContext.drawImage(image, -snake.width/2, -snake.height/2, snake.width, snake.height);
+    canvasContext.restore();
 }
 
 const growBody = (unitSize) => {
@@ -27,30 +83,25 @@ const growBody = (unitSize) => {
 
 const draw = () => {
 
-    console.log("Draw");
-    snake.angle += 5;
-     
     //Background
     canvasContext.fillStyle = "green";
     canvasContext.fillRect(0,0,canvas.width, canvas.height);
 
-    //Rotate Snake Head
-    canvasContext.save();
-    canvasContext.translate((snake.posX + snake.width)/2, (snake.posY + snake.height)/2);
-    canvasContext.rotate(Math.PI/180 * snake.angle);
+    rotateSnakeHead(rotateSpeed, rotateTo);
 
-    //Snake Head
-    canvasContext.fillStyle = "purple";
-    canvasContext.fillRect(-snake.width, -snake.height, 50, 50);
-    canvasContext.restore();
 
-    canvasContext.fillStyle = 'blue';
-    canvasContext.fillRect((snake.posX + snake.width)/2, (snake.posY + snake.height)/2, 60, 60);
-    // //Snake Body
-    // for(let i = 1; i < snake.unitLength; i++) {
-    //     canvasContext.fillStyle = "purple";
-    //     canvasContext.fillRect(snake.posX - ((snake.width+5)*i), snake.posY, snake.width, snake.height);
-    // }
+    // console.log(rotateSpeed);
+    // if(isSnakeRotating()) return;
+
+    // //Snake Head
+    // canvasContext.fillStyle = "purple";
+    // canvasContext.fillRect(snake.posX, snake.posY, snake.width, snake.height);
+
+    // //Snake eyes
+    // canvasContext.fillStyle = "blue";
+    // canvasContext.fillRect(snakeEyes.posX, snakeEyes.posY, snakeEyes.width, snakeEyes.height);
+
+    // canvasContext.drawImage(image, snake.posX, snake.posY, snake.width, snake.height);
 }
 
 
@@ -65,20 +116,17 @@ window.onload = () => {
     
     //EVENT LISTENERS
     document.addEventListener('keydown', (event) => {
-        if(event.keyCode === arrowKeys.left.code) {
-            arrowKeys.left.active = true;
-            snake.angle += 1;
-            console.log(snake.angle);
-            draw();
+        if(event.keyCode === arrowKeys.left.code && !isSnakeRotating()) {
+            rotateSpeed =-20;
+            rotateTo += -90;
         } 
-        if(event.keyCode === arrowKeys.right.code) {
-            arrowKeys.right.active = true;
+        if(event.keyCode === arrowKeys.right.code && !isSnakeRotating()) {
+            rotateSpeed =20;
+            rotateTo += 90;
         } 
-        if(event.keyCode === arrowKeys.up.code) {
-            arrowKeys.up.active = true;
+        if(event.keyCode === arrowKeys.up.code && !isSnakeRotating()) {
         } 
-        if(event.keyCode === arrowKeys.down.code) {
-            arrowKeys.down.active = true;
+        if(event.keyCode === arrowKeys.down.code && !isSnakeRotating()) {
         } 
 
         //TESTING
@@ -86,28 +134,8 @@ window.onload = () => {
             growBody(1);
         }
     });
-    document.addEventListener('keyup', (event) => {
-        if(event.keyCode === arrowKeys.left.code) {
-            arrowKeys.left.active = false;
-        } 
-        if(event.keyCode === arrowKeys.right.code) {
-            arrowKeys.right.active = false;
-        } 
-        if(event.keyCode === arrowKeys.up.code) {
-            arrowKeys.up.active = false;
-        } 
-        if(event.keyCode === arrowKeys.down.code) {
-            arrowKeys.down.active = false;
-        } 
-    });
 }
-    // //Controller
-    // if(arrowKeys.left.active) {
-    //     snake.moveX(-5);
-    // }
-    // if(arrowKeys.right.active) snake.moveX(5);
-    // if(arrowKeys.up.active) snake.moveY(-5);
-    // if(arrowKeys.down.active) snake.moveY(5);
+
 
 
     // let posX=200, posY=200, width=200, height=200;
@@ -118,3 +146,25 @@ window.onload = () => {
     // canvasContext.fillStyle = "blue";
     // canvasContext.fillRect((-1*posX)/2,(-1*posY)/2,width, height);
     // canvasContext.restore();
+
+        // document.addEventListener('keyup', (event) => {
+    //     if(event.keyCode === arrowKeys.left.code) {
+    //         // arrowKeys.left.active = false;
+    //     } 
+    //     if(event.keyCode === arrowKeys.right.code) {
+    //         arrowKeys.right.active = false;
+    //     } 
+    //     if(event.keyCode === arrowKeys.up.code) {
+    //         arrowKeys.up.active = false;
+    //     } 
+    //     if(event.keyCode === arrowKeys.down.code) {
+    //         arrowKeys.down.active = false;
+    //     } 
+    // });
+
+        
+    // //Snake Body
+    // for(let i = 1; i < snake.unitLength; i++) {
+    //     canvasContext.fillStyle = "purple";
+    //     canvasContext.fillRect(snake.posX - ((snake.width+5)*i), snake.posY, snake.width, snake.height);
+    // }
