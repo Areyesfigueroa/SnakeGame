@@ -25,6 +25,19 @@ const snake = {
     facingDirection: DIRECTIONS.RIGHT
 };
 
+const tile= {
+    posX: 0,
+    posY: 0,
+    style: '#B7E3BD',
+    width: snake.width,
+    height: snake.height
+}
+
+const gameBoard ={
+    columns: 0,
+    rows: 0
+}
+
 let image = new Image();
 image.src = './snake-sprite.png';
 
@@ -45,48 +58,36 @@ const isSnakeRotating = () => {
     return snake.angle !== rotateTo;
 }
 
-const rotateSnakeHead = (angleSpeed, destAngle) => {
-    // console.log(snake.angle,destAngle);
-
+const rotate = (angleSpeed, destAngle, drawingObj) => {
     if(angleSpeed > 0) {
         // console.log("right");
-        if(snake.angle >= destAngle) {
-            snake.angle = destAngle;
+        if(drawingObj.angle >= destAngle) {
+            drawingObj.angle = destAngle;
         } else {
-            snake.angle += angleSpeed;
+            drawingObj.angle += angleSpeed;
         }
     } else {
         // console.log("left");
-        if(snake.angle <= destAngle) {
-            snake.angle = destAngle;
+        if(drawingObj.angle <= destAngle) {
+            drawingObj.angle = destAngle;
         } else {
-            snake.angle += angleSpeed;
+            drawingObj.angle += angleSpeed;
         }
     }
-
-
     //Rotate Snake Head
     canvasContext.save();
-    canvasContext.translate(snake.width/2 + snake.posX, snake.height/2 + snake.posY);
-    canvasContext.rotate(Math.PI/180 * snake.angle);
+    canvasContext.translate(drawingObj.width/2 + drawingObj.posX, drawingObj.height/2 + drawingObj.posY);
+    canvasContext.rotate(Math.PI/180 * drawingObj.angle);
 
     //Snake Head
-    canvasContext.drawImage(image, -snake.width/2, -snake.height/2, snake.width, snake.height);
+    canvasContext.drawImage(image, -drawingObj.width/2, -drawingObj.height/2, drawingObj.width, drawingObj.height);
     canvasContext.restore();
-}
-
-const growBody = (unitSize) => {
-    snake.unitLength += unitSize;
 }
 
 const draw = () => {
 
-    //Background
-    canvasContext.fillStyle = "green";
-    canvasContext.fillRect(0,0,canvas.width, canvas.height);
-
     //Update Rotation
-    rotateSnakeHead(rotateSpeed, rotateTo);
+    rotate(rotateSpeed, rotateTo, snake);
 
     //Update Movement
     switch(snake.facingDirection) {
@@ -106,21 +107,11 @@ const draw = () => {
             moveSpeed = 0;
     }
 
-    console.log(snake.facingDirection);
-    // canvasContext.drawImage(image, snake.posX, snake.posY, snake.width, snake.height);
-
-    // console.log(rotateSpeed);
-    // if(isSnakeRotating()) return;
-
-    // //Snake Head
-    // canvasContext.fillStyle = "purple";
-    // canvasContext.fillRect(snake.posX, snake.posY, snake.width, snake.height);
-
-    // //Snake eyes
-    // canvasContext.fillStyle = "blue";
-    // canvasContext.fillRect(snakeEyes.posX, snakeEyes.posY, snakeEyes.width, snakeEyes.height);
-
-    // canvasContext.drawImage(image, snake.posX, snake.posY, snake.width, snake.height);
+    //Snake Body
+    for(let i = 1; i < snake.unitLength; i++) {
+        canvasContext.fillStyle = "blue";
+        canvasContext.fillRect(snake.posX - ((snake.width)*i), snake.posY, snake.width, snake.height);
+    }
 }
 
 
@@ -128,6 +119,24 @@ window.onload = () => {
     canvas = document.getElementById('gameCanvas');
     canvasContext = canvas.getContext('2d');
 
+    gameBoard.columns = canvas.width/tile.width;
+    gameBoard.rows = canvas.height/tile.height;
+    
+    //Draw Board
+    let startingStyle = tile.style;
+    for(let row = 0; row < gameBoard.rows; row++) {
+        for(let col=0; col < gameBoard.columns; col++) {
+            // debugger;
+            canvasContext.fillStyle = tile.style;
+            canvasContext.fillRect(tile.posX + (tile.width * col),tile.posY + (tile.height * row),tile.width,tile.height);
+    
+            tile.style = tile.style === "#709E7C" ? "#B7E3BD":"#709E7C";
+        }
+        tile.posX = 0;
+        tile.style = startingStyle==="#B7E3BD" ? "#709E7C": "#B7E3BD";
+        startingStyle = tile.style;
+    }
+    
     const framesPerSecond = 60;
     setInterval(() => {    
         draw();
@@ -204,13 +213,13 @@ window.onload = () => {
 
         //TESTING
         if(event.keyCode === 16) {
-            growBody(1);
+            snake.unitLength += 1;
         }
     });
         //TESTING
         document.addEventListener('keyup', (event) => {
         if(event.keyCode === 32) {
-            moveSpeed = 0;
+            // moveSpeed = 0;
         } 
     });
 }
@@ -242,8 +251,3 @@ window.onload = () => {
     // });
 
         
-    // //Snake Body
-    // for(let i = 1; i < snake.unitLength; i++) {
-    //     canvasContext.fillStyle = "purple";
-    //     canvasContext.fillRect(snake.posX - ((snake.width+5)*i), snake.posY, snake.width, snake.height);
-    // }
