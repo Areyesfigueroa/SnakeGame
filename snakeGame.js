@@ -79,9 +79,6 @@ const rotate = (angleSpeed, destAngle, drawingObj) => {
 
 const draw = () => {
 
-    //Update Rotation
-    rotate(rotateSpeed, rotateTo, snake);
-
     //Update Movement
     switch(snake.facingDirection) {
         case DIRECTIONS.RIGHT:
@@ -105,6 +102,10 @@ const draw = () => {
         canvasContext.fillStyle = "blue";
         canvasContext.fillRect(snake.posX - ((snake.width)*i), snake.posY, snake.width, snake.height);
     }
+    // canvasContext.drawImage(image, snake.posX, snake.posY, snake.width, snake.height);
+
+    //Draw Snake and Update Rotation
+    rotate(rotateSpeed, rotateTo, snake);
 }
 
 
@@ -117,23 +118,25 @@ window.onload = () => {
         rows: canvas.height/tile.height
     }
     
-    //Draw Board
-    let startingStyle = tile.style;
-    for(let row = 0; row < gameBoard.rows; row++) {
-        for(let col=0; col < gameBoard.columns; col++) {
-            // debugger;
-            canvasContext.fillStyle = tile.style;
-            canvasContext.fillRect(tile.posX + (tile.width * col),tile.posY + (tile.height * row),tile.width,tile.height);
-    
-            tile.style = tile.style === "#709E7C" ? "#B7E3BD":"#709E7C";
-        }
-        tile.posX = 0;
-        tile.style = startingStyle==="#B7E3BD" ? "#709E7C": "#B7E3BD";
-        startingStyle = tile.style;
-    }
 
+
+    //Update Drawing
     const framesPerSecond = 60;
     setInterval(() => {    
+        //Draw Board
+        let startingStyle = tile.style;
+        for(let row = 0; row < gameBoard.rows; row++) {
+            for(let col=0; col < gameBoard.columns; col++) {
+                // debugger;
+                canvasContext.fillStyle = tile.style;
+                canvasContext.fillRect(tile.posX + (tile.width * col),tile.posY + (tile.height * row),tile.width,tile.height);
+        
+                tile.style = tile.style === "#709E7C" ? "#B7E3BD":"#709E7C";
+            }
+            tile.posX = 0;
+            tile.style = startingStyle==="#B7E3BD" ? "#709E7C": "#B7E3BD";
+            startingStyle = tile.style;
+        }
         draw();
     }, 1000/framesPerSecond);
     
