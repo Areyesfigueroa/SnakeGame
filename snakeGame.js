@@ -33,25 +33,17 @@ const tile= {
     height: snake.height
 }
 
-const gameBoard ={
-    columns: 0,
-    rows: 0
-}
-
 let image = new Image();
 image.src = './snake-sprite.png';
 
 let rotateSpeed=0;
 let rotateTo=0;
 let moveSpeed=0;
+
 const setArrowKeys = (active) => {
     for(key in arrowKeys) {
         arrowKeys[key].active = active;
     }
-}
-
-const moveSnakeX = (speed=5) => {
-    snake.posX += speed 
 }
 
 const isSnakeRotating = () => {
@@ -82,6 +74,7 @@ const rotate = (angleSpeed, destAngle, drawingObj) => {
     //Snake Head
     canvasContext.drawImage(image, -drawingObj.width/2, -drawingObj.height/2, drawingObj.width, drawingObj.height);
     canvasContext.restore();
+    // canvasContext.drawImage(image, drawingObj.posX, drawingObj.posY, drawingObj.width, drawingObj.height);
 }
 
 const draw = () => {
@@ -119,8 +112,10 @@ window.onload = () => {
     canvas = document.getElementById('gameCanvas');
     canvasContext = canvas.getContext('2d');
 
-    gameBoard.columns = canvas.width/tile.width;
-    gameBoard.rows = canvas.height/tile.height;
+    const gameBoard ={
+        columns: canvas.width/tile.width,
+        rows: canvas.height/tile.height
+    }
     
     //Draw Board
     let startingStyle = tile.style;
@@ -136,7 +131,7 @@ window.onload = () => {
         tile.style = startingStyle==="#B7E3BD" ? "#709E7C": "#B7E3BD";
         startingStyle = tile.style;
     }
-    
+
     const framesPerSecond = 60;
     setInterval(() => {    
         draw();
@@ -144,6 +139,7 @@ window.onload = () => {
     
     //EVENT LISTENERS
     document.addEventListener('keydown', (event) => {
+
 
         if(snake.facingDirection === DIRECTIONS.RIGHT) {
             if(event.keyCode === arrowKeys.up.code && !isSnakeRotating()) {
@@ -216,8 +212,9 @@ window.onload = () => {
             snake.unitLength += 1;
         }
     });
-        //TESTING
-        document.addEventListener('keyup', (event) => {
+
+    //TESTING
+    document.addEventListener('keyup', (event) => {
         if(event.keyCode === 32) {
             // moveSpeed = 0;
         } 
