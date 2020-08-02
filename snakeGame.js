@@ -39,6 +39,19 @@ image.src = './snake-sprite.png';
 let rotateSpeed=0;
 let rotateTo=0;
 let moveSpeed=0;
+let nextTile = null;
+let latestInput = null;
+
+const gameBoard = {
+    columns: 0,
+    rows: 0,
+    coordinates: {
+        xAxis: [],
+        yAxis: []
+    }
+}
+
+
 
 const setArrowKeys = (active) => {
     for(key in arrowKeys) {
@@ -77,7 +90,7 @@ const rotate = (angleSpeed, destAngle, drawingObj) => {
     // canvasContext.drawImage(image, drawingObj.posX, drawingObj.posY, drawingObj.width, drawingObj.height);
 }
 
-const draw = () => {
+const drawSnake = () => {
 
     //Update Movement
     switch(snake.facingDirection) {
@@ -97,130 +110,191 @@ const draw = () => {
             moveSpeed = 0;
     }
 
+    //Update Rotation
+    updateRotationValues();
+
     //Snake Body
     for(let i = 1; i < snake.unitLength; i++) {
         canvasContext.fillStyle = "blue";
         canvasContext.fillRect(snake.posX - ((snake.width)*i), snake.posY, snake.width, snake.height);
     }
-    // canvasContext.drawImage(image, snake.posX, snake.posY, snake.width, snake.height);
-
     //Draw Snake and Update Rotation
     rotate(rotateSpeed, rotateTo, snake);
 }
 
+const drawBoard = (rows, columns) => {
+    //Draw Board
+    let startingStyle = tile.style;
+    for(let row = 0; row < rows; row++) {
+        for(let col=0; col < columns; col++) {
+            canvasContext.fillStyle = tile.style;
+            canvasContext.fillRect(tile.posX + (tile.width * col),tile.posY + (tile.height * row),tile.width,tile.height);
+            
+            tile.style = tile.style === "#709E7C" ? "#B7E3BD":"#709E7C";
+        }
+        tile.posX = 0;
+        tile.style = startingStyle==="#B7E3BD" ? "#709E7C": "#B7E3BD";
+        startingStyle = tile.style;
+    }
+}
+
+const hasReachedNextTile = () => {
+    //There has to be a next tile and we have either gone past it on x or y axis. 
+    if(!nextTile) return false;
+
+    if(snake.facingDirection === DIRECTIONS.LEFT) {
+        return snake.posX <= nextTile;
+    }
+
+    if(snake.facingDirection === DIRECTIONS.RIGHT) {
+        return snake.posX >= nextTile;
+    }
+
+    if(snake.facingDirection === DIRECTIONS.UP) {
+        return snake.posY <= nextTile;
+    }
+
+    if(snake.facingDirection === DIRECTIONS.DOWN) {
+        return snake.posY >= nextTile;
+    }
+}
+
+const isInputValid = (facingDirection, keyCode) => {
+    if(facingDirection === DIRECTIONS.RIGHT) {
+        return (keyCode === arrowKeys.up.code || keyCode === arrowKeys.down.code);
+    }
+
+    if(facingDirection === DIRECTIONS.LEFT) {
+        return (keyCode === arrowKeys.up.code || keyCode === arrowKeys.down.code);
+    }
+
+    if(facingDirection === DIRECTIONS.UP) {
+        return (keyCode === arrowKeys.left.code || keyCode === arrowKeys.right.code); 
+    }
+
+    if(facingDirection === DIRECTIONS.DOWN) {
+        return (keyCode === arrowKeys.left.code || keyCode === arrowKeys.right.code);   
+    }
+
+}
+
+const updateRotationValues = () => {
+    //Have reached
+    if(latestInput && hasReachedNextTile() && !isSnakeRotating()) {
+        
+        //Update rotation values based on facing direction.
+        switch(latestInput) {
+            case arrowKeys.up.code:
+                rotateSpeed = snake.facingDirection === DIRECTIONS.RIGHT ? -20:20;
+                rotateTo += snake.facingDirection === DIRECTIONS.RIGHT ? -90:90;
+
+                snake.facingDirection = DIRECTIONS.UP;
+                break;
+            case arrowKeys.down.code:
+                rotateSpeed = snake.facingDirection === DIRECTIONS.RIGHT ? 20: -20;
+                rotateTo += snake.facingDirection === DIRECTIONS.RIGHT ? 90: -90;
+
+                snake.facingDirection = DIRECTIONS.DOWN;
+                break;
+            case arrowKeys.left.code:
+                rotateSpeed = snake.facingDirection === DIRECTIONS.UP ? -20:20;
+                rotateTo += snake.facingDirection === DIRECTIONS.UP ? -90: 90;
+
+                snake.facingDirection = DIRECTIONS.LEFT;
+                break;
+            case arrowKeys.right.code:
+                rotateSpeed = snake.facingDirection === DIRECTIONS.UP ? 20:-20;
+                rotateTo += snake.facingDirection === DIRECTIONS.UP ? 90: -90;
+
+                snake.facingDirection = DIRECTIONS.RIGHT;
+                break;
+        }
+
+        //Reset latest input.
+        latestInput = null;
+
+        //Update the next target.
+        nextTile = snake.posX + tile.width;
+    }
+}
+
+const drawNextTile = (x, y, w, h) => {
+    canvasContext.fillStyle = "blue";
+    canvasContext.fillRect(x, y, w, h);
+}
 
 window.onload = () => {
     canvas = document.getElementById('gameCanvas');
     canvasContext = canvas.getContext('2d');
 
-    const gameBoard ={
-        columns: canvas.width/tile.width,
-        rows: canvas.height/tile.height
-    }
-    
+    //Initialize Board
+    gameBoard.columns = canvas.width/tile.width;
+    gameBoard.rows = canvas.height/tile.height;
 
+    //Initialize Coordinates
+    for(let i = 0; i <= gameBoard.rows; i++) {
+        gameBoard.coordinates.yAxis.push(tile.height * i);
+    } 
+    for(let i = 0; i <= gameBoard.columns; i++) {
+        gameBoard.coordinates.xAxis.push(tile.width * i);
+    } 
 
     //Update Drawing
     const framesPerSecond = 60;
     setInterval(() => {    
-        //Draw Board
-        let startingStyle = tile.style;
-        for(let row = 0; row < gameBoard.rows; row++) {
-            for(let col=0; col < gameBoard.columns; col++) {
-                // debugger;
-                canvasContext.fillStyle = tile.style;
-                canvasContext.fillRect(tile.posX + (tile.width * col),tile.posY + (tile.height * row),tile.width,tile.height);
-        
-                tile.style = tile.style === "#709E7C" ? "#B7E3BD":"#709E7C";
-            }
-            tile.posX = 0;
-            tile.style = startingStyle==="#B7E3BD" ? "#709E7C": "#B7E3BD";
-            startingStyle = tile.style;
-        }
-        draw();
+        drawBoard(gameBoard.rows, gameBoard.columns);
+        drawSnake();
     }, 1000/framesPerSecond);
     
+
     //EVENT LISTENERS
     document.addEventListener('keydown', (event) => {
+        
+        //Can the snake move in this direction.
+        if(isInputValid(snake.facingDirection, event.keyCode)) {
+            //Save latest input. 
+            latestInput = event.keyCode;
 
-
-        if(snake.facingDirection === DIRECTIONS.RIGHT) {
-            if(event.keyCode === arrowKeys.up.code && !isSnakeRotating()) {
-                rotateSpeed =-20;
-                rotateTo += -90;
-
-                snake.facingDirection = DIRECTIONS.UP;
-            } 
-            if(event.keyCode === arrowKeys.down.code && !isSnakeRotating()) {
-                rotateSpeed =20;
-                rotateTo += 90;
-
-                snake.facingDirection = DIRECTIONS.DOWN;
-            } 
-        }
-
-        if(snake.facingDirection === DIRECTIONS.LEFT) {
-            if(event.keyCode === arrowKeys.up.code && !isSnakeRotating()) {
-                rotateSpeed =20;
-                rotateTo += 90;
-
-                snake.facingDirection = DIRECTIONS.UP;
-            } 
-            if(event.keyCode === arrowKeys.down.code && !isSnakeRotating()) {
-                rotateSpeed =-20;
-                rotateTo += -90;
-
-                snake.facingDirection = DIRECTIONS.DOWN;
-            } 
-        }
-
-        if(snake.facingDirection === DIRECTIONS.UP) {
-            if(event.keyCode === arrowKeys.left.code && !isSnakeRotating()) {
-                rotateSpeed =-20;
-                rotateTo += -90;
-
-                snake.facingDirection = DIRECTIONS.LEFT;
-            } 
-            if(event.keyCode === arrowKeys.right.code && !isSnakeRotating()) {
-                rotateSpeed =20;
-                rotateTo += 90;
-
-                snake.facingDirection = DIRECTIONS.RIGHT;
-            }     
-        }
-
-        if(snake.facingDirection === DIRECTIONS.DOWN) {
-            if(event.keyCode === arrowKeys.left.code && !isSnakeRotating()) {
-                rotateSpeed =20;
-                rotateTo += 90;
-
-                snake.facingDirection = DIRECTIONS.LEFT;
-            } 
-            if(event.keyCode === arrowKeys.right.code && !isSnakeRotating()) {
-                rotateSpeed =-20;
-                rotateTo += -90;
-
-                snake.facingDirection = DIRECTIONS.RIGHT;
-            }     
+            //Update target
+            let idx = 0;
+            switch(snake.facingDirection) {
+                case DIRECTIONS.UP:
+                    idx = gameBoard.coordinates.yAxis.findIndex((yPlot) => yPlot > snake.posY) - 1;
+                    nextTile = gameBoard.coordinates.yAxis[idx];
+                    drawNextTile(snake.posX, gameBoard.coordinates.yAxis[idx], 10, 10);
+                    break;
+                case DIRECTIONS.DOWN:
+                    idx = gameBoard.coordinates.yAxis.findIndex((yPlot) => yPlot > snake.posY); 
+                    nextTile = gameBoard.coordinates.yAxis[idx];
+                    drawNextTile(snake.posX, gameBoard.coordinates.yAxis[idx], 10, 10);
+                    break;
+                case DIRECTIONS.LEFT:
+                    idx = gameBoard.coordinates.xAxis.findIndex((xPlot) => xPlot > snake.posX) - 1;
+                    nextTile = gameBoard.coordinates.xAxis[idx];
+                    drawNextTile(gameBoard.coordinates.xAxis[idx], snake.posY, 10, 10);
+                    break;
+                case DIRECTIONS.RIGHT:
+                    idx = gameBoard.coordinates.xAxis.findIndex((xPlot) => xPlot > snake.posX); 
+                    nextTile = gameBoard.coordinates.xAxis[idx];
+                    drawNextTile(gameBoard.coordinates.xAxis[idx], snake.posY, 10, 10);
+                    break;
+                default:
+                    console.log(`${latestInput} is not correct`);
+            }
+            console.log(nextTile);
+            
         }
 
         //TESTING
         if(event.keyCode === 32) {
-            console.log("Move");
-            moveSpeed = 1;
+            console.log("Move");            
+            moveSpeed = 3;
         }
 
         //TESTING
         if(event.keyCode === 16) {
             snake.unitLength += 1;
         }
-    });
-
-    //TESTING
-    document.addEventListener('keyup', (event) => {
-        if(event.keyCode === 32) {
-            // moveSpeed = 0;
-        } 
     });
 }
 
@@ -250,4 +324,82 @@ window.onload = () => {
     //     } 
     // });
 
+    // if(snake.facingDirection === DIRECTIONS.RIGHT) {
+
+    //     //Rotate once we reach the target
+    //     if(event.keyCode === arrowKeys.up.code && !isSnakeRotating()) {
+
+    //         //Update latest input
+    //         latestInput = DIRECTIONS.UP;
+
+    //         rotateSpeed =-20;
+    //         rotateTo += -90;
+
+    //         snake.facingDirection = DIRECTIONS.UP;
+    //     } 
+    //     if(event.keyCode === arrowKeys.down.code && !isSnakeRotating()) {
+    //         rotateSpeed =20;
+    //         rotateTo += 90;
+
+    //         snake.facingDirection = DIRECTIONS.DOWN;
+    //     } 
+    // }
+
+    // if(snake.facingDirection === DIRECTIONS.LEFT) {
+    //     if(event.keyCode === arrowKeys.up.code && !isSnakeRotating()) {
+    //         rotateSpeed =20;
+    //         rotateTo += 90;
+
+    //         snake.facingDirection = DIRECTIONS.UP;
+    //     } 
+    //     if(event.keyCode === arrowKeys.down.code && !isSnakeRotating()) {
+    //         rotateSpeed =-20;
+    //         rotateTo += -90;
+
+    //         snake.facingDirection = DIRECTIONS.DOWN;
+    //     } 
+    // }
+
+    // if(snake.facingDirection === DIRECTIONS.UP) {
+    //     if(event.keyCode === arrowKeys.left.code && !isSnakeRotating()) {
+    //         rotateSpeed =-20;
+    //         rotateTo += -90;
+
+    //         snake.facingDirection = DIRECTIONS.LEFT;
+    //     } 
+    //     if(event.keyCode === arrowKeys.right.code && !isSnakeRotating()) {
+    //         rotateSpeed =20;
+    //         rotateTo += 90;
+
+    //         snake.facingDirection = DIRECTIONS.RIGHT;
+    //     }     
+    // }
+
+    // if(snake.facingDirection === DIRECTIONS.DOWN) {
+    //     if(event.keyCode === arrowKeys.left.code && !isSnakeRotating()) {
+    //         rotateSpeed =20;
+    //         rotateTo += 90;
+
+    //         snake.facingDirection = DIRECTIONS.LEFT;
+    //     } 
+    //     if(event.keyCode === arrowKeys.right.code && !isSnakeRotating()) {
+    //         rotateSpeed =-20;
+    //         rotateTo += -90;
+
+    //         snake.facingDirection = DIRECTIONS.RIGHT;
+    //     }     
+    // }
+
+    // //TESTING
+    // if(event.keyCode === 32) {
+    //     console.log("Move");
+        
+    //     nextTile = snake.posX + tile.width;
+    //     moveSpeed = moveSpeed ? 0:1;
+    // }
+
+    // //TESTING
+    // if(event.keyCode === 16) {
+    //     snake.unitLength += 1;
+    // }
         
