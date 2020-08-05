@@ -1,7 +1,6 @@
 
 //Factory Function
-const GameObject = (x, y, w, h) => {
-    
+const GameObject = (x, y, w, h) => { 
     return {
         posX: x,
         posY: y,
@@ -9,10 +8,6 @@ const GameObject = (x, y, w, h) => {
         height: h
     };
 }
-
-//CANVAS VARIABLES
-canvas = null;
-canvasContext = null;
 
 //SNAKE VARIABLES
 const DIRECTIONS = {
@@ -32,8 +27,8 @@ const arrowKeys = {
 const snake = {
     posX: 100,
     posY: 100,
-    width: 50,
-    height: 50,
+    width: tile.width,
+    height: tile.height,
     unitLength: 0,
     angle: 0,
     facingDirection: DIRECTIONS.RIGHT
@@ -47,6 +42,7 @@ image.src = './snake-sprite.png';
 let rotateSpeed=0;
 let rotateTo=0;
 let moveSpeed=0;
+
 let nextTile = null;
 let latestInput = null;
 
@@ -108,6 +104,8 @@ const drawSnakeBody = () => {
     }
 }
 
+//SNAKE DATA HANDLER METHODS
+//TESTING
 const updateSnakeBodyRotationValues = () => {
 
     // //Update rotation values based on facing direction.
@@ -140,7 +138,6 @@ const updateSnakeBodyRotationValues = () => {
 
 }
 
-//SNAKE DATA HANDLER METHODS
 const updateObjRotationValues = (obj) => {
     //Have reached
     if(latestInput && hasReachedNextTile(obj) && !isSnakeRotating()) {
@@ -198,6 +195,7 @@ const updateObjMovementValues = (obj) => {
     }
 }
 
+//TODO: Testing how to store next tile coordinates. 
 const updateSnakeNextTileValues = () => {
 
     //Get the turning point coordinates so that we can draw them. 
@@ -246,7 +244,6 @@ const updateSnakeBodyValues = () => {
     }
 }
 
-
 //SNAKE HELPER METHODS
 const hasReachedNextTile = (obj) => {
     //There has to be a next tile and we have either gone past it on x or y axis. 
@@ -288,118 +285,12 @@ const isInputValid = (facingDirection, keyCode) => {
 
 }
 
-const setArrowKeys = (active) => {
-    for(key in arrowKeys) {
-        arrowKeys[key].active = active;
-    }
-}
-
 const isSnakeRotating = () => {
     return snake.angle !== rotateTo;
 }
 
-//GAME BOARD VARIABLES
-const gameBoard = {
-    columns: 0,
-    rows: 0,
-    coordinates: {
-        xAxis: [],
-        yAxis: []
-    },
-    rotationTiles: []
-}
-const tile= {
-    posX: 0,
-    posY: 0,
-    style: '#B7E3BD',
-    width: snake.width,
-    height: snake.height
-}
-//GAME BOARD METHODS
-const initializeGameBoardValues = (canvas) => {
-    //Initialize Board
-    gameBoard.columns = canvas.width/tile.width;
-    gameBoard.rows = canvas.height/tile.height;
-
-    //Initialize Coordinates
-    for(let i = 0; i <= gameBoard.rows; i++) {
-        gameBoard.coordinates.yAxis.push(tile.height * i);
-    } 
-    for(let i = 0; i <= gameBoard.columns; i++) {
-        gameBoard.coordinates.xAxis.push(tile.width * i);
-    } 
-}
-
-const drawBoard = (rows, columns) => {
-    //Draw Board
-    let startingStyle = tile.style;
-    for(let row = 0; row < rows; row++) {
-        for(let col=0; col < columns; col++) {
-            canvasContext.fillStyle = tile.style;
-            canvasContext.fillRect(tile.posX + (tile.width * col),tile.posY + (tile.height * row),tile.width,tile.height);
-            
-            tile.style = tile.style === "#709E7C" ? "#B7E3BD":"#709E7C";
-        }
-        tile.posX = 0;
-        tile.style = startingStyle==="#B7E3BD" ? "#709E7C": "#B7E3BD";
-        startingStyle = tile.style;
+const setArrowKeys = (active) => {
+    for(key in arrowKeys) {
+        arrowKeys[key].active = active;
     }
-}
-
-//GAME BOARD TESTING METHODS
-const drawTestCube = (x, y, w, h) => {
-    canvasContext.fillStyle = "blue";
-    canvasContext.fillRect(x, y, w, h);
-}
-
-const drawRotationTile = () => {
-    for(key in gameBoard.rotationTiles) {
-        drawTestCube(gameBoard.rotationTiles[key], snake.posY, 50, 50);
-
-        // drawTestCube(gameBoard.rotationTiles[key].posX, gameBoard.rotationTiles[key].posY, gameBoard.rotationTiles[key].width, gameBoard.rotationTiles[key].height);
-    }
-}
-
-//MAIN METHOD
-window.onload = () => {
-    canvas = document.getElementById('gameCanvas');
-    canvasContext = canvas.getContext('2d');
-
-    initializeGameBoardValues(canvas);
-
-    //Update Drawing
-    const framesPerSecond = 60;
-    setInterval(() => {    
-        drawBoard(gameBoard.rows, gameBoard.columns);
-        drawSnake();
-        drawRotationTile();
-
-
-    }, 1000/framesPerSecond);
-    
-    //EVENT LISTENERS
-    document.addEventListener('keydown', (event) => {
-        
-        //Can the snake move in this direction.
-        if(isInputValid(snake.facingDirection, event.keyCode)) {
-            //Save latest input. 
-            latestInput = event.keyCode;
-
-            updateSnakeNextTileValues();
-            
-        }
-
-        //TESTING - Spacebar
-        if(event.keyCode === 32) {
-            console.log("Move");            
-            moveSpeed = moveSpeed ? 0:3;
-        }
-
-        //TESTING - Shift
-        if(event.keyCode === 16) {
-            //Update Snake Body
-            snake.unitLength += 1;
-            updateSnakeBodyValues();
-        }
-    });
 }
