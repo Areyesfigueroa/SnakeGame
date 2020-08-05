@@ -201,30 +201,31 @@ const updateSnakeNextTileValues = () => {
     //Get the turning point coordinates so that we can draw them. 
 
     //Update target
-    let idx = 0, direction = null;
+    let idx = 0;
     switch(snake.facingDirection) {
         case DIRECTIONS.UP:
             idx = gameBoard.coordinates.yAxis.findIndex((yPlot) => yPlot > snake.posY) - 1;
             nextTile = gameBoard.coordinates.yAxis[idx];
 
-            gameBoard.rotationTiles.push({posX: snake.posX, posY: nextTile});
+            gameBoard.rotationTiles.push({ posX: snake.posX, posY: nextTile, width: tile.width, height: tile.height});
             break;
         case DIRECTIONS.DOWN:
             idx = gameBoard.coordinates.yAxis.findIndex((yPlot) => yPlot > snake.posY); 
             nextTile = gameBoard.coordinates.yAxis[idx];
 
-            gameBoard.rotationTiles.push({posX: snake.posX, posY: nextTile});
+            gameBoard.rotationTiles.push({ posX: snake.posX, posY: nextTile, width: tile.width, height: tile.height});
             break;
         case DIRECTIONS.LEFT:
             idx = gameBoard.coordinates.xAxis.findIndex((xPlot) => xPlot > snake.posX) - 1;
             nextTile = gameBoard.coordinates.xAxis[idx];
 
-            gameBoard.rotationTiles.push({posX: nextTile - tile.height, posY: nextTile});
+            gameBoard.rotationTiles.push({ posX: nextTile, posY: snake.posY, width: tile.width, height: tile.height});
             break;
         case DIRECTIONS.RIGHT:
             idx = gameBoard.coordinates.xAxis.findIndex((xPlot) => xPlot > snake.posX); 
             nextTile = gameBoard.coordinates.xAxis[idx];
-            direction = DIRECTIONS.RIGHT;
+
+            gameBoard.rotationTiles.push({ posX: nextTile, posY: snake.posY, width: tile.width, height: tile.height});
             break;
         default:
             console.log(`${snake.facingDirection} is not correct`);

@@ -49,9 +49,11 @@ const drawBoard = (rows, columns) => {
 
 //GAME BOARD TESTING METHODS
 const drawRotationTile = () => {
-    for(key in gameBoard.rotationTiles) {
-        drawTestCube(gameBoard.rotationTiles[key], snake.posY, 50, 50);
 
-        // drawTestCube(gameBoard.rotationTiles[key].posX, gameBoard.rotationTiles[key].posY, gameBoard.rotationTiles[key].width, gameBoard.rotationTiles[key].height);
+    if(gameBoard.rotationTiles.length <= 0) return;
+    // debugger;
+    for(let i=0; i < gameBoard.rotationTiles.length; i++) {
+
+        drawTestCube(gameBoard.rotationTiles[i].posX, gameBoard.rotationTiles[i].posY, gameBoard.rotationTiles[i].width, gameBoard.rotationTiles[i].height);  
     }
 }
