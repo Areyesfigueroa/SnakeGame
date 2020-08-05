@@ -9,7 +9,7 @@ const GameObject = (x, y, w, h) => {
     };
 }
 
-//SNAKE VARIABLES
+//VARIABLES
 const DIRECTIONS = {
     RIGHT: 'right',
     LEFT: 'left',
@@ -25,170 +25,138 @@ const arrowKeys = {
 }
 
 const snake = {
-    posX: 100,
-    posY: 100,
+    body: [
+        {x: 150, y: 100},
+        {x: 100, y: 100},
+        {x: 50, y: 100}
+    ],
     width: tile.width,
     height: tile.height,
-    unitLength: 0,
     angle: 0,
     facingDirection: DIRECTIONS.RIGHT
 };
-
-let snakeBodyParts = [];
 
 let image = new Image();
 image.src = './snake-sprite.png';
 
 let rotateSpeed=0;
 let rotateTo=0;
-let moveSpeed=0;
+let moveSpeed=3;
 
 let nextTile = null;
-let latestInput = null;
+let newDirection = null;
 
-//SNAKE DRAW METHODS
+//DRAW METHODS
 const drawSnake = () => {
 
     //Update Movement
-    updateObjMovementValues(snake);
+    handleMovement(snake, snake.facingDirection);
 
     //Update Rotation 
-    updateObjRotationValues(snake);
+    updateObjRotationValues();
 
     drawSnakeBody();
 
-    //Draw Snake and Update Rotation
-    rotate(rotateSpeed, rotateTo, snake);
+    //Draw and Update Rotation
+    rotate(rotateSpeed, rotateTo);
 }
 
-const rotate = (angleSpeed, destAngle, drawingObj) => {
+const rotate = (angleSpeed, destAngle) => {
     if(angleSpeed > 0) {
         // console.log("right");
-        if(drawingObj.angle >= destAngle) {
-            drawingObj.angle = destAngle;
+        if(snake.angle >= destAngle) {
+            snake.angle = destAngle;
         } else {
-            drawingObj.angle += angleSpeed;
+            snake.angle += angleSpeed;
         }
     } else {
         // console.log("left");
-        if(drawingObj.angle <= destAngle) {
-            drawingObj.angle = destAngle;
+        if(snake.angle <= destAngle) {
+            snake.angle = destAngle;
         } else {
-            drawingObj.angle += angleSpeed;
+            snake.angle += angleSpeed;
         }
     }
-    //Rotate Snake Head
+    //Rotate Head
     canvasContext.save();
-    canvasContext.translate(drawingObj.width/2 + drawingObj.posX, drawingObj.height/2 + drawingObj.posY);
-    canvasContext.rotate(Math.PI/180 * drawingObj.angle);
+    canvasContext.translate(snake.width/2 + snake.body[0].x, snake.height/2 + snake.body[0].y);
+    canvasContext.rotate(Math.PI/180 * snake.angle);
 
-    //Snake Head
-    canvasContext.drawImage(image, -drawingObj.width/2, -drawingObj.height/2, drawingObj.width, drawingObj.height);
+    //Head
+    // canvasContext.fillRect(-snake.width/2, -snake.height/2, snake.width, snake.height);
+    canvasContext.drawImage(image,-snake.width/2, -snake.height/2, snake.width, snake.height);
     canvasContext.restore();
-    // canvasContext.drawImage(image, drawingObj.posX, drawingObj.posY, drawingObj.width, drawingObj.height);
 }
 
 const drawSnakeBody = () => {
+    // debugger;
+    if(snake.body.length <= 0) return;
 
-    if(!snake.unitLength) return;
-
-    for(let i = 0; i < snakeBodyParts.length; i++) {
-        //Update movements
-        updateObjMovementValues(snakeBodyParts[i]);
+    for(let i = 0; i < snake.body.length; i++) {
+        // Update movements
+        handleMovement(snake.body[i], snake.facingDirection);
 
         //Update our rotations
-        // updateObjRotationValues(snakeBodyParts[i]);
+        // updateObjRotationValues(snake.body[i]);
 
         canvasContext.fillStyle = "purple";
-        canvasContext.fillRect(snakeBodyParts[i].posX, snakeBodyParts[i].posY, snakeBodyParts[i].width, snakeBodyParts[i].height);
+        canvasContext.fillRect(snake.body[i].x, snake.body[i].y, snake.width, snake.height);
     }
 }
 
 //SNAKE DATA HANDLER METHODS
-//TESTING
-const updateSnakeBodyRotationValues = () => {
-
-    // //Update rotation values based on facing direction.
-    // switch(latestInput) {
-    //     case arrowKeys.up.code:
-    //         rotateSpeed = obj.facingDirection === DIRECTIONS.RIGHT ? -20:20;
-    //         rotateTo += obj.facingDirection === DIRECTIONS.RIGHT ? -90:90;
-
-    //         obj.facingDirection = DIRECTIONS.UP;
-    //         break;
-    //     case arrowKeys.down.code:
-    //         rotateSpeed = obj.facingDirection === DIRECTIONS.RIGHT ? 20: -20;
-    //         rotateTo += obj.facingDirection === DIRECTIONS.RIGHT ? 90: -90;
-
-    //         obj.facingDirection = DIRECTIONS.DOWN;
-    //         break;
-    //     case arrowKeys.left.code:
-    //         rotateSpeed = obj.facingDirection === DIRECTIONS.UP ? -20:20;
-    //         rotateTo += obj.facingDirection === DIRECTIONS.UP ? -90: 90;
-
-    //         obj.facingDirection = DIRECTIONS.LEFT;
-    //         break;
-    //     case arrowKeys.right.code:
-    //         rotateSpeed = obj.facingDirection === DIRECTIONS.UP ? 20:-20;
-    //         rotateTo += obj.facingDirection === DIRECTIONS.UP ? 90: -90;
-
-    //         obj.facingDirection = DIRECTIONS.RIGHT;
-    //         break;
-    // }
-
-}
-
-const updateObjRotationValues = (obj) => {
+const updateObjRotationValues = () => {
     //Have reached
-    if(latestInput && hasReachedNextTile(obj) && !isSnakeRotating()) {
+    if(newDirection && hasReachedNextTile() && !isSnakeRotating()) {
         
         //Update rotation values based on facing direction.
-        switch(latestInput) {
-            case arrowKeys.up.code:
-                rotateSpeed = obj.facingDirection === DIRECTIONS.RIGHT ? -20:20;
-                rotateTo += obj.facingDirection === DIRECTIONS.RIGHT ? -90:90;
+        switch(newDirection) {
+            case DIRECTIONS.UP:
+                rotateSpeed = snake.facingDirection === DIRECTIONS.RIGHT ? -20:20;
+                rotateTo += snake.facingDirection === DIRECTIONS.RIGHT ? -90:90;
 
-                obj.facingDirection = DIRECTIONS.UP;
+                snake.facingDirection = DIRECTIONS.UP;
                 break;
-            case arrowKeys.down.code:
-                rotateSpeed = obj.facingDirection === DIRECTIONS.RIGHT ? 20: -20;
-                rotateTo += obj.facingDirection === DIRECTIONS.RIGHT ? 90: -90;
+            case DIRECTIONS.DOWN:
+                rotateSpeed = snake.facingDirection === DIRECTIONS.RIGHT ? 20: -20;
+                rotateTo += snake.facingDirection === DIRECTIONS.RIGHT ? 90: -90;
 
-                obj.facingDirection = DIRECTIONS.DOWN;
+                snake.facingDirection = DIRECTIONS.DOWN;
                 break;
-            case arrowKeys.left.code:
-                rotateSpeed = obj.facingDirection === DIRECTIONS.UP ? -20:20;
-                rotateTo += obj.facingDirection === DIRECTIONS.UP ? -90: 90;
+            case DIRECTIONS.LEFT:
+                rotateSpeed = snake.facingDirection === DIRECTIONS.UP ? -20:20;
+                rotateTo += snake.facingDirection === DIRECTIONS.UP ? -90: 90;
 
-                obj.facingDirection = DIRECTIONS.LEFT;
+                snake.facingDirection = DIRECTIONS.LEFT;
                 break;
-            case arrowKeys.right.code:
-                rotateSpeed = obj.facingDirection === DIRECTIONS.UP ? 20:-20;
-                rotateTo += obj.facingDirection === DIRECTIONS.UP ? 90: -90;
+            case DIRECTIONS.RIGHT:
+                rotateSpeed = snake.facingDirection === DIRECTIONS.UP ? 20:-20;
+                rotateTo += snake.facingDirection === DIRECTIONS.UP ? 90: -90;
 
-                obj.facingDirection = DIRECTIONS.RIGHT;
+                snake.facingDirection = DIRECTIONS.RIGHT;
                 break;
         }
 
-        //Reset latest input.
-        latestInput = null;
+        //Reset latest direction.
+        newDirection = null;
     }
 }
 
-const updateObjMovementValues = (obj) => {
+const handleMovement = (coord, facingDirection) => {
+    // debugger;
     //Update Movement
-    switch(obj.facingDirection) {
+    switch(facingDirection) {
         case DIRECTIONS.RIGHT:
-            obj.posX += moveSpeed;
+            coord.x += moveSpeed;
             break;
         case DIRECTIONS.LEFT:
-            obj.posX -= moveSpeed;
+            coord.x -= moveSpeed;
             break;
         case DIRECTIONS.DOWN:
-            obj.posY += moveSpeed;
+            coord.y += moveSpeed;
             break;
         case DIRECTIONS.UP:
-            obj.posY -= moveSpeed;
+            coord.y -= moveSpeed;
             break;
         default:
             moveSpeed = 0;
@@ -204,66 +172,65 @@ const updateSnakeNextTileValues = () => {
     let idx = 0;
     switch(snake.facingDirection) {
         case DIRECTIONS.UP:
-            idx = gameBoard.coordinates.yAxis.findIndex((yPlot) => yPlot > snake.posY) - 1;
+            idx = gameBoard.coordinates.yAxis.findIndex((yPlot) => yPlot > snake.body[0].y) - 1;
             nextTile = gameBoard.coordinates.yAxis[idx];
 
-            gameBoard.rotationTiles.push({ posX: snake.posX, posY: nextTile, width: tile.width, height: tile.height});
+            gameBoard.rotationTiles.push({ posX: snake.body[0].x, posY: nextTile, width: tile.width, height: tile.height});
             break;
         case DIRECTIONS.DOWN:
-            idx = gameBoard.coordinates.yAxis.findIndex((yPlot) => yPlot > snake.posY); 
+            idx = gameBoard.coordinates.yAxis.findIndex((yPlot) => yPlot > snake.body[0].y); 
             nextTile = gameBoard.coordinates.yAxis[idx];
 
-            gameBoard.rotationTiles.push({ posX: snake.posX, posY: nextTile, width: tile.width, height: tile.height});
+            gameBoard.rotationTiles.push({ posX: snake.body[0].x, posY: nextTile, width: tile.width, height: tile.height});
             break;
         case DIRECTIONS.LEFT:
-            idx = gameBoard.coordinates.xAxis.findIndex((xPlot) => xPlot > snake.posX) - 1;
+            idx = gameBoard.coordinates.xAxis.findIndex((xPlot) => xPlot > snake.body[0].x) - 1;
             nextTile = gameBoard.coordinates.xAxis[idx];
 
-            gameBoard.rotationTiles.push({ posX: nextTile, posY: snake.posY, width: tile.width, height: tile.height});
+            gameBoard.rotationTiles.push({ posX: nextTile, posY: snake.body[0].y, width: tile.width, height: tile.height});
             break;
         case DIRECTIONS.RIGHT:
-            idx = gameBoard.coordinates.xAxis.findIndex((xPlot) => xPlot > snake.posX); 
+            idx = gameBoard.coordinates.xAxis.findIndex((xPlot) => xPlot > snake.body[0].x); 
             nextTile = gameBoard.coordinates.xAxis[idx];
 
-            gameBoard.rotationTiles.push({ posX: nextTile, posY: snake.posY, width: tile.width, height: tile.height});
+            gameBoard.rotationTiles.push({ posX: nextTile, posY: snake.body[0].y, width: tile.width, height: tile.height});
             break;
         default:
             console.log(`${snake.facingDirection} is not correct`);
     }
-
-    //Update rotationTiles for snake body to use
 }
 
 const updateSnakeBodyValues = () => {
-    let newBodyPart = null;
     switch(snake.facingDirection) {
         case DIRECTIONS.RIGHT:
-            newBodyPart = GameObject(snake.posX - (snake.width * snake.unitLength), snake.posY, snake.width, snake.height);
-            newBodyPart.facingDirection = DIRECTIONS.RIGHT;
-            snakeBodyParts.push(newBodyPart);
+            snake.body.push(
+            { 
+                x: snake.body[0].x - (snake.width * snake.body.length),
+                y: snake.body[0] 
+            });
             break;
     }
 }
 
 //SNAKE HELPER METHODS
-const hasReachedNextTile = (obj) => {
+const hasReachedNextTile = () => {
     //There has to be a next tile and we have either gone past it on x or y axis. 
     if(!nextTile) return false;
 
-    if(obj.facingDirection === DIRECTIONS.LEFT) {
-        return obj.posX <= nextTile;
+    if(snake.facingDirection === DIRECTIONS.LEFT) {
+        return snake.body[0].x <= nextTile;
     }
 
-    if(obj.facingDirection === DIRECTIONS.RIGHT) {
-        return obj.posX >= nextTile;
+    if(snake.facingDirection === DIRECTIONS.RIGHT) {
+        return snake.body[0].x >= nextTile;
     }
 
-    if(obj.facingDirection === DIRECTIONS.UP) {
-        return obj.posY <= nextTile;
+    if(snake.facingDirection === DIRECTIONS.UP) {
+        return snake.body[0].y <= nextTile;
     }
 
-    if(obj.facingDirection === DIRECTIONS.DOWN) {
-        return obj.posY >= nextTile;
+    if(snake.facingDirection === DIRECTIONS.DOWN) {
+        return snake.body[0].y >= nextTile;
     }
 }
 

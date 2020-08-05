@@ -53,7 +53,6 @@ const drawRotationTile = () => {
     if(gameBoard.rotationTiles.length <= 0) return;
     // debugger;
     for(let i=0; i < gameBoard.rotationTiles.length; i++) {
-
         drawTestCube(gameBoard.rotationTiles[i].posX, gameBoard.rotationTiles[i].posY, gameBoard.rotationTiles[i].width, gameBoard.rotationTiles[i].height);  
     }
 }
