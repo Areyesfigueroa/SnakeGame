@@ -10,11 +10,11 @@ window.onload = () => {
     initializeGameBoardValues(canvas);
 
     //Update Drawing
-    const framesPerSecond = 60;
+    const framesPerSecond = 10; //60;
     setInterval(() => {    
         drawBoard(gameBoard.rows, gameBoard.columns);
         drawSnake();
-        drawRotationTile();
+        // drawRotationTile();
 
     }, 1000/framesPerSecond);
 }

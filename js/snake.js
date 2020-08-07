@@ -28,7 +28,8 @@ const snake = {
     body: [
         {x: 150, y: 100},
         {x: 100, y: 100},
-        {x: 50, y: 100}
+        {x: 50, y: 100},
+        {x: 0, y: 100}
     ],
     width: tile.width,
     height: tile.height,
@@ -41,7 +42,7 @@ image.src = './snake-sprite.png';
 
 let rotateSpeed=0;
 let rotateTo=0;
-let moveSpeed=3;
+let moveSpeed=2;
 
 let nextTile = null;
 let newDirection = null;
@@ -49,12 +50,11 @@ let newDirection = null;
 //DRAW METHODS
 const drawSnake = () => {
 
-    //Update Movement
-    handleMovement(snake, snake.facingDirection);
-
     //Update Rotation 
     updateObjRotationValues();
 
+    moveSnakeBody();
+    moveSnakeTail();
     drawSnakeBody();
 
     //Draw and Update Rotation
@@ -88,21 +88,117 @@ const rotate = (angleSpeed, destAngle) => {
     canvasContext.restore();
 }
 
+const moveSnakeTail = () => {
+
+}
+
+const moveSnakeBody = () => {
+
+    //create copy of snake
+    var snakeCopy = [];
+    //loop through snake
+    // if(snake.body[0].x >= snake.body[1].x + tile.width || snake.body[0].y >= snake.body[0].y + tile.height) {
+    // {
+        for (var i = 0; i < snake.body.length; i++) {
+            //for each iteration, add snake body to snake copy
+            snakeCopy.push({
+                x: snake.body[i].x,
+                y: snake.body[i].y
+            });
+        }
+    // }
+    for(let i = 0; i < snake.body.length; i++) {
+
+        if(i === 0) {
+            // Update Head
+            if(snake.facingDirection === DIRECTIONS.RIGHT) {
+                snake.body[i].x += moveSpeed;
+            }
+            if(snake.facingDirection === DIRECTIONS.LEFT){
+                snake.body[i].x -= moveSpeed;
+            }
+            if(snake.facingDirection === DIRECTIONS.DOWN){
+                snake.body[i].y += moveSpeed;
+            }
+            if(snake.facingDirection === DIRECTIONS.UP){
+                snake.body[i].y -= moveSpeed;
+            }
+        } else {
+            //Update Body
+            const parent = snake.body[i - 1];
+            const child = snake.body[i];
+
+            if(parent.x > child.x + tile.width || parent.y > child.y + tile.height) {
+                // console.log("Going Right");
+                child.x = snakeCopy[i - 1].x;
+                child.y = snakeCopy[i - 1].y;
+            }
+
+            if(parent.x < child.x - tile.width || parent.y < child.y - tile.height) {
+                // console.log("Going Right");
+                child.x = snakeCopy[i - 1].x;
+                child.y = snakeCopy[i - 1].y;
+            }
+
+
+
+            // if(parent.x + tile.width > child.x + tile.width) {
+            // console.log("Going Right");
+            // child.x += moveSpeed;
+            // }
+            // if(parent.y > child.y + tile.width) {
+            // console.log("Going Down");
+            // child.y += moveSpeed;
+            // }
+
+        }
+    }
+}
+
+
+
 const drawSnakeBody = () => {
     // debugger;
     if(snake.body.length <= 0) return;
 
     for(let i = 0; i < snake.body.length; i++) {
-        // Update movements
-        handleMovement(snake.body[i], snake.facingDirection);
-
-        //Update our rotations
-        // updateObjRotationValues(snake.body[i]);
 
         canvasContext.fillStyle = "purple";
         canvasContext.fillRect(snake.body[i].x, snake.body[i].y, snake.width, snake.height);
     }
 }
+
+// function moveSnake() {
+//     //create copy of snake
+//     var snakeCopy = [];
+//     //loop through snake
+//     for (var i = 0; i < snake.length; i++) {
+//         //for each iteration, add snake body to snake copy
+//         snakeCopy.push({
+//             x: snake[i].x,
+//             y: snake[i].y
+//         });
+//     }
+//     for (var i = 0; i < snake.length; i++) {
+//         if (i === 0) {
+//             if (snakeDirection === DIRECTION.EAST) {
+//                 snake[i].x += dx;
+//             }
+//             if (snakeDirection === DIRECTION.WEST) {
+//                 snake[i].x -= dx;
+//             }
+//             if (snakeDirection === DIRECTION.NORTH) {
+//                 snake[i].y -= dy;
+//             }
+//             if (snakeDirection === DIRECTION.SOUTH) {
+//                 snake[i].y += dy;
+//             }
+//         } else {
+//             snake[i].x = snakeCopy[i - 1].x;
+//             snake[i].y = snakeCopy[i - 1].y;
+//         }
+//     }
+// }
 
 //SNAKE DATA HANDLER METHODS
 const updateObjRotationValues = () => {
@@ -139,27 +235,6 @@ const updateObjRotationValues = () => {
 
         //Reset latest direction.
         newDirection = null;
-    }
-}
-
-const handleMovement = (coord, facingDirection) => {
-    // debugger;
-    //Update Movement
-    switch(facingDirection) {
-        case DIRECTIONS.RIGHT:
-            coord.x += moveSpeed;
-            break;
-        case DIRECTIONS.LEFT:
-            coord.x -= moveSpeed;
-            break;
-        case DIRECTIONS.DOWN:
-            coord.y += moveSpeed;
-            break;
-        case DIRECTIONS.UP:
-            coord.y -= moveSpeed;
-            break;
-        default:
-            moveSpeed = 0;
     }
 }
 
