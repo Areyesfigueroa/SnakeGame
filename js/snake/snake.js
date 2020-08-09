@@ -77,7 +77,6 @@ const drawSnakeHead = (angleSpeed, destAngle) => {
 }
 
 const drawSnakeBody = () => {
-    // debugger;
     if(snake.body.length <= 0) return;
 
     for(let i = 0; i < snake.body.length; i++) {
@@ -117,7 +116,6 @@ const moveSnakeBody = () => {
        || head.x - headChild.x == -50
        || head.y - headChild.y == 50
        || head.y - headChild.y == -50) {
-        //    debugger;
            for(let i = snake.body.length - 2; i > 1; i--) {
                const parent = snake.body[i - 1];
 
@@ -132,6 +130,9 @@ const moveSnakeBody = () => {
 }
 
 const rotateSnakeHead = () => {
+
+    // console.log(hasReachedNextTile());
+
     //Have reached
     if(newDirection && hasReachedNextTile() && !isSnakeRotating()) {
         

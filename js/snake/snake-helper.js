@@ -1,21 +1,27 @@
 
 const hasReachedNextTile = () => {
     //There has to be a next tile and we have either gone past it on x or y axis. 
-    if(!nextTile) return false;
+    if(nextTile === null || nextTile < 0) return false;
 
     if(snake.facingDirection === DIRECTIONS.LEFT) {
+        console.log(snake.body[0].x, nextTile);
         return snake.body[0].x <= nextTile;
     }
 
     if(snake.facingDirection === DIRECTIONS.RIGHT) {
+        console.log(snake.body[0].x, nextTile);
         return snake.body[0].x >= nextTile;
     }
 
     if(snake.facingDirection === DIRECTIONS.UP) {
+        console.log(snake.body[0].y, nextTile);
+
         return snake.body[0].y <= nextTile;
     }
 
     if(snake.facingDirection === DIRECTIONS.DOWN) {
+        console.log(snake.body[0].y, nextTile);
+
         return snake.body[0].y >= nextTile;
     }
 }
@@ -45,6 +51,7 @@ const updateSnakeNextTileValues = () => {
     //Update target
     let idx = 0;
     switch(snake.facingDirection) {
+
         case DIRECTIONS.UP:
             idx = gameBoard.coordinates.yAxis.findIndex((yPlot) => yPlot > snake.body[0].y) - 1;
             nextTile = gameBoard.coordinates.yAxis[idx];
