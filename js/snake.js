@@ -89,17 +89,22 @@ const rotate = (angleSpeed, destAngle) => {
 }
 
 const moveSnakeTail = () => {
-    const head = snake.body[snake.body.length - 3];
+    const tailParent = snake.body[snake.body.length - 2];
     const tail = snake.body[snake.body.length - 1];
 
-    //Head moves right.
-    if(head.x > tail.x + tile.width) {
-        // debugger;
-        tail.x += moveSpeed;
+    //If we are moving vertically
+    if(tailParent.x === tail.x && tailParent.y !== tail.y) {
+        //are we moving up or down. Check parent to know where. 
+        if(tailParent.y > tail.y) tail.y += moveSpeed;
+        if(tailParent.y < tail.y) tail.y -= moveSpeed;
     }
-    
-    //What is the direction of the head. 
-    
+
+    //If we are moving horizontally
+    if(tailParent.y === tail.y && tailParent.x !== tail.x) {
+        //are we moving left or right. Check parent to know where. 
+        if(tailParent.x > tail.x) tail.x += moveSpeed;
+        if(tailParent.x < tail.x) tail.x -= moveSpeed;
+    }
 }
 
 const moveSnakeBody = () => {
