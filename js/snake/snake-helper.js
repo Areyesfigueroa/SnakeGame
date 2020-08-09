@@ -4,24 +4,18 @@ const hasReachedNextTile = () => {
     if(nextTile === null || nextTile < 0) return false;
 
     if(snake.facingDirection === DIRECTIONS.LEFT) {
-        console.log(snake.body[0].x, nextTile);
         return snake.body[0].x <= nextTile;
     }
 
     if(snake.facingDirection === DIRECTIONS.RIGHT) {
-        console.log(snake.body[0].x, nextTile);
         return snake.body[0].x >= nextTile;
     }
 
     if(snake.facingDirection === DIRECTIONS.UP) {
-        console.log(snake.body[0].y, nextTile);
-
         return snake.body[0].y <= nextTile;
     }
 
     if(snake.facingDirection === DIRECTIONS.DOWN) {
-        console.log(snake.body[0].y, nextTile);
-
         return snake.body[0].y >= nextTile;
     }
 }

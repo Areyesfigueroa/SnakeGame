@@ -10,7 +10,7 @@ window.onload = () => {
     initializeGameBoardValues(canvas);
 
     //Update Drawing
-    const framesPerSecond = 5; //60;
+    const framesPerSecond = 60; //60;
     setInterval(() => {    
         drawBoard(gameBoard.rows, gameBoard.columns);
         drawSnake();

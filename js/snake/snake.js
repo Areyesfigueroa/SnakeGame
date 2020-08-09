@@ -40,9 +40,8 @@ const drawSnake = () => {
     drawSnakeBody();
 
     if(hasAppleCollided(snake.body[0])) {
-        //Grow Body
-        console.log("Growing body");
-        //TODO: Call growSnake method.
+        console.log("Growing");
+        growSnakeBody();
     }
 
     //Draw and Update Rotation
@@ -169,6 +168,38 @@ const rotateSnakeHead = () => {
     }
 }
 
-//TODO: Implement grow snake logic
-const growSnake = () => {
+const growSnakeBody = () => {
+    //Grow in the direction of the tail.
+    const tailParent = snake.body[snake.body.length - 2];
+    const tail = snake.body[snake.body.length - 1];
+
+        //If we are moving vertically
+        if(tailParent.x === tail.x && tailParent.y !== tail.y) {
+            //are we moving up or down. Check parent to know where. 
+            if(tailParent.y > tail.y) {
+                //Going Down
+                // console.log("Grow Up");
+                snake.body.push({x: tailParent.x, y: tailParent.y - snake.height});
+            };
+            if(tailParent.y < tail.y) {
+                //Going Up
+                // console.log("Grow Down");
+                snake.body.push({x: tailParent.x, y: tailParent.y + snake.height});
+            };
+        }
+    
+        //If we are moving horizontally
+        if(tailParent.y === tail.y && tailParent.x !== tail.x) {
+            //are we moving left or right. Check parent to know where. 
+            if(tailParent.x > tail.x) {
+                //Going Right
+                // console.log("Grow Left");
+                snake.body.push({x: tailParent.x - snake.width, y: tailParent.y});
+            };
+            if(tailParent.x < tail.x)  {
+                //Going Left
+                // console.log("Grow Right");
+                snake.body.push({x: tailParent.x + snake.width, y: tailParent.y});
+            }
+        }
 }
