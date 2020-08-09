@@ -1,3 +1,28 @@
-canvas {
+
+.title {
+    text-align: center;
+}
+
+#game {
+    display: flex;
+    position: relative;
+    width: auto;
+    height: auto;
+    border: 1px solid black;
+    justify-content: center;
+}
+
+#game-canvas {
     border: 3px solid brown;
+    top: 0;
+    left: 0;
+}
+
+.game-over {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top: calc(50% - 50px); /* Minus height/2 in px*/
+    left: calc(50% - 50px); /* Minus width/2 in px*/
+    border:1px solid red;
 }

@@ -4,7 +4,7 @@ canvasContext = null;
 
 //MAIN METHOD
 window.onload = () => {
-    canvas = document.getElementById('gameCanvas');
+    canvas = document.getElementById('game-canvas');
     canvasContext = canvas.getContext('2d');
 
     initializeGameBoardValues(canvas);

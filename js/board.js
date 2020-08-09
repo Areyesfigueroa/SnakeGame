@@ -36,6 +36,13 @@ const initializeGameBoardValues = (canvas) => {
 }
 
 const drawBoard = (rows, columns) => {
+
+    //Check for out of bounds
+    if(isOutOfBounds(snake.body[0])) {
+        console.log("Game Over");
+        moveSpeed = 0;
+    }
+
     //Draw Board
     let startingStyle = tile.style;
     for(let row = 0; row < rows; row++) {
@@ -49,4 +56,18 @@ const drawBoard = (rows, columns) => {
         tile.style = startingStyle==="#B7E3BD" ? "#709E7C": "#B7E3BD";
         startingStyle = tile.style;
     }
+}
+
+const isOutOfBounds = (obj) => {
+    //Horizontal Check
+    if(obj.x + tile.size > gameBoard.width || obj.x < 0) {
+        return true;
+    }
+
+    //Vertical Check
+    if(obj.y + tile.size > gameBoard.height || obj.y < 0) {
+        return true;
+    }
+
+    return false;
 }
