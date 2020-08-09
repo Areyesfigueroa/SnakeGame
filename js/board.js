@@ -6,28 +6,32 @@ const gameBoard = {
         xAxis: [],
         yAxis: []
     },
-    rotationTiles: []
+    width: 0,
+    height: 0
 }
+
 const tile= {
     posX: 0,
     posY: 0,
     style: '#B7E3BD',
-    width: 50,
-    height: 50
+    size: 50
 }
 
 //GAME BOARD METHODS
 const initializeGameBoardValues = (canvas) => {
     //Initialize Board
-    gameBoard.columns = canvas.width/tile.width;
-    gameBoard.rows = canvas.height/tile.height;
+    gameBoard.columns = canvas.width/tile.size;
+    gameBoard.rows = canvas.height/tile.size;
+
+    gameBoard.width = canvas.width;
+    gameBoard.height = canvas.height;
 
     //Initialize Coordinates
     for(let i = 0; i <= gameBoard.rows; i++) {
-        gameBoard.coordinates.yAxis.push(tile.height * i);
+        gameBoard.coordinates.yAxis.push(tile.size * i);
     } 
     for(let i = 0; i <= gameBoard.columns; i++) {
-        gameBoard.coordinates.xAxis.push(tile.width * i);
+        gameBoard.coordinates.xAxis.push(tile.size * i);
     } 
 }
 
@@ -37,22 +41,12 @@ const drawBoard = (rows, columns) => {
     for(let row = 0; row < rows; row++) {
         for(let col=0; col < columns; col++) {
             canvasContext.fillStyle = tile.style;
-            canvasContext.fillRect(tile.posX + (tile.width * col),tile.posY + (tile.height * row),tile.width,tile.height);
+            canvasContext.fillRect(tile.posX + (tile.size * col),tile.posY + (tile.size * row),tile.size,tile.size);
             
             tile.style = tile.style === "#709E7C" ? "#B7E3BD":"#709E7C";
         }
         tile.posX = 0;
         tile.style = startingStyle==="#B7E3BD" ? "#709E7C": "#B7E3BD";
         startingStyle = tile.style;
-    }
-}
-
-//GAME BOARD TESTING METHODS
-const drawRotationTile = () => {
-
-    if(gameBoard.rotationTiles.length <= 0) return;
-    // debugger;
-    for(let i=0; i < gameBoard.rotationTiles.length; i++) {
-        drawTestCube(gameBoard.rotationTiles[i].posX, gameBoard.rotationTiles[i].posY, gameBoard.rotationTiles[i].width, gameBoard.rotationTiles[i].height);  
     }
 }
