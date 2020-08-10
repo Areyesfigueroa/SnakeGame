@@ -17,6 +17,7 @@ const tile= {
     size: 50
 }
 
+
 //GAME BOARD METHODS
 const initializeGameBoardValues = (canvas) => {
     //Initialize Board
@@ -40,7 +41,8 @@ const drawBoard = (rows, columns) => {
     //Check for out of bounds
     if(isOutOfBounds(snake.body[0])) {
         console.log("Game Over");
-        moveSpeed = 0;
+        gameState.gameOver = true;
+        // moveSpeed = 0;
     }
 
     //Draw Board

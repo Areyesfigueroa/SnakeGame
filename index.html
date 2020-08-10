@@ -9,12 +9,12 @@
         <h1 class="title">Snake Game</h1>
         <div id='game'>
             <div>
-                <!-- <div class='modal'>
+                <div id="game-over-modal" class='modal'>
                     <div class="game-over">
-                        <h1>YOUR SCORE: 100</h1>
+                        <h1>YOUR SCORE: <span id="game-over-score">100</span></h1>
                         <h3>Top 3 Leaderboard</h3>
                         <ul class="leaderboard">
-                            <li>
+                            <!-- <li>
                                 1.
                                 <img src="./assets/apple.png"/>0
                                 <img src="./assets/trophy.png"/>0
@@ -28,14 +28,14 @@
                                 3.
                                 <img src="./assets/apple.png"/>0
                                 <img src="./assets/trophy.png"/>0
-                            </li>
+                            </li> -->
                         </ul>
                         <button>Play Again?</button>
                     </div>  
-                </div> -->
+                </div>
                 <div class='scoreboard'>
-                    <img src="./assets/apple.png"/>0
-                    <img src="./assets/trophy.png"/>0
+                    <img src="./assets/apple.png"/><span id="apple-score">0</span>
+                    <img src="./assets/trophy.png"/><span id="trophy-score">0</span>
                 </div>
                 <canvas id="game-canvas" width="800px" height="600px"></canvas>
             </div>
@@ -46,6 +46,7 @@
         <script type="text/javascript" src="./js/apple.js"></script>
         <script type="text/javascript" src="./js/snake/snake-helper.js"></script>
         <script type="text/javascript" src="./js/snake/snake.js"></script>
+        <script type="text/javascript" src="./js/scoreboard.js"></script>
         <script type="text/javascript" src="./js/game.js"></script>
         <script type="text/javascript" src="./js/keyboard-events.js"></script>
     </body>

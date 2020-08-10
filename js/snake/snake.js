@@ -31,7 +31,7 @@ let newDirection = null;
 
 //DRAW METHODS
 const drawSnake = () => {
-
+    
     //Update Rotation 
     rotateSnakeHead();
 
@@ -40,7 +40,6 @@ const drawSnake = () => {
     drawSnakeBody();
 
     if(hasAppleCollided(snake.body[0])) {
-        console.log("Growing");
         growSnakeBody();
     }
 

@@ -27,6 +27,7 @@ button:hover {
 -------------------------- 
  */
 .modal {
+    display: none;
     position: absolute;
     background-color: rgba(41, 41, 41, .7);
     width: 806px; 
@@ -34,6 +35,9 @@ button:hover {
     z-index: 999;
 }
 
+.active {
+    display: block;
+}
 /*
 --------------------------
     GAME
@@ -69,9 +73,18 @@ button:hover {
 
 .scoreboard {
     position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding-bottom: 3px;
 }
 .scoreboard img {
     height: 40px;
+    margin-right: 5px;
+}
+.scoreboard span {
+    margin-right: 20px;
 }
 
 /*
