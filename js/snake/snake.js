@@ -20,7 +20,7 @@ const snake = {
 };
 
 let image = new Image();
-image.src = './snake-sprite.png';
+image.src = './assets/snake-sprite.png';
 
 let rotateSpeed=0;
 let rotateTo=0;

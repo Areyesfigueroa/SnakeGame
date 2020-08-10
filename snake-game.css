@@ -1,4 +1,45 @@
 
+
+/*
+--------------------------
+    PURE ELEMENTS
+-------------------------- 
+ */
+button {
+    padding: 10px;
+    font-size: 15px;
+    background-color: rgb(184, 110, 184);
+    border: 1px solid black;
+    color: white;
+    outline: none;
+    border-radius: 5px;
+}
+
+button:hover {
+    cursor: pointer;
+    background-color: rgb(143, 86, 143);
+}
+
+
+/*
+--------------------------
+    GENERAL
+-------------------------- 
+ */
+.modal {
+    position: absolute;
+    background-color: rgba(41, 41, 41, .7);
+    width: 806px; 
+    height: 100%;
+    z-index: 999;
+}
+
+/*
+--------------------------
+    GAME
+-------------------------- 
+ */
+
 .title {
     text-align: center;
 }
@@ -8,7 +49,8 @@
     position: relative;
     width: auto;
     height: auto;
-    border: 1px solid black;
+    margin: auto;
+    /* border: 1px solid black; */
     justify-content: center;
 }
 
@@ -18,11 +60,56 @@
     left: 0;
 }
 
+
+/*
+--------------------------
+    SCOREBOARD
+-------------------------- 
+ */
+
+.scoreboard {
+    position: relative;
+}
+.scoreboard img {
+    height: 40px;
+}
+
+/*
+--------------------------
+    GAME OVER SECTION
+-------------------------- 
+*/
+
 .game-over {
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    top: calc(50% - 50px); /* Minus height/2 in px*/
-    left: calc(50% - 50px); /* Minus width/2 in px*/
-    border:1px solid red;
+    position: relative;
+    top: 150px;
+    width: 50%;
+    max-width: 400px;
+    min-width: 300px;
+    text-align: center;
+    margin: auto;
+    padding-bottom: 21px;
+    border:1px solid #ccc;
+    border-radius: 5px;
+    background-color: #20649B;
+    color: rgb(235, 231, 231);
+    box-sizing: border-box;
+}
+
+
+.leaderboard {
+    list-style: none;
+    margin: auto;
+    padding: 10px;
+    max-width: 150px;
+}
+.leaderboard li img {
+    height: 40px;
+    margin-bottom: 10px;
+}
+.leaderboard li {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
