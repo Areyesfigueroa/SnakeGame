@@ -28,26 +28,45 @@ const updateGameOverScore = () => {
     gameOverScore.textContent = scoreboard.appleScore;
 }
 
-//TODO: Implement Leaderboard Logic
 const updateLeaderboard = () => {
-    // debugger;
-    //Get reference to leaderboard on the gameOver screen.
-    const leaderboardEl = document.querySelector(DOMstrings.leaderboard);
+     //Update Leaderboard Data
+    if(leaderboard.length === 0) {
+        leaderboard.push({...scoreboard});
+        leaderboard.push({appleScore: 0, trophyScore: 0});
+        leaderboard.push({appleScore: 0, trophyScore: 0});
+    } else {
+        let replacedScore = null;
+        for(let i = 0; i < leaderboard.length; i++) {
+            if(replacedScore) {
+                let tempScore = {...leaderboard[i]}; //save
+                leaderboard[i] = {...replacedScore};
 
-    //Update the leaderboard score
-    //TODO: Implement Leaderboard Logic
-    leaderboard.push({...scoreboard});
+                replacedScore = {...tempScore};
+            } else if(scoreboard.appleScore > leaderboard[i].appleScore) {
+                let tempScore = {...leaderboard[i]}; //save the current score
+                leaderboard[i] = {...scoreboard}; //replace the current score for the new one
+                
+                replacedScore = {...tempScore};
+            }
+        }
+    }
 
-    //Display the leaderboard
-    leaderboard.forEach((scoreboard, idx) => {
-        const html = `
-        <li>
-            ${idx + 1}.<img src='./assets/apple.png'/>${scoreboard.appleScore}
-            <img src='./assets/trophy.png'/>${scoreboard.trophyScore}
-        </li>
-        `;
-       leaderboardEl.insertAdjacentHTML("afterbegin", html);
+    displayLeaderboard();
+}
+
+const displayLeaderboard = () => {
+
+    let lbAppleScoreEl,lbTrophyScoreEl;
+    leaderboard.forEach((score, i) => {
+        //Get elements
+        lbAppleScoreEl = document.getElementById(`${DOMstrings.lbAppleScore}-${i+1}`);
+        lbTrophyScoreEl = document.getElementById(`${DOMstrings.lbTrophyScore}-${i+1}`);
+
+        //Update values
+        lbAppleScoreEl.textContent = score.appleScore;
+        lbTrophyScoreEl.textContent = score.trophyScore;
     });
+
 }
 
 const drawScoreBoard = () => {
@@ -57,8 +76,13 @@ const drawScoreBoard = () => {
     console.log('Update Score');
     incrementAppleScore(1);
 
-    if(leaderboard.length === 0) incrementTrophyScore(1);
+    if(scoreboard.appleScore > scoreboard.trophyScore) incrementTrophyScore(1);
 
     displayAppleScore(scoreboard.appleScore);
     displayTrophyScore(scoreboard.trophyScore);
+}
+
+const resetScoreboard = () => {
+    scoreboard.appleScore = 0;
+    displayAppleScore(scoreboard.appleScore);
 }

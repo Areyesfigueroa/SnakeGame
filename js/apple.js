@@ -40,3 +40,8 @@ const hasAppleCollided = (obj) => {
         return true;
     }
 }
+
+const resetApple = () => {
+    //Set to initial coord
+    [apple.x, apple.y] = [250, 100];
+}

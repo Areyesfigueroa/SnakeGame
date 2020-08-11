@@ -202,3 +202,20 @@ const growSnakeBody = () => {
             }
         }
 }
+
+const resetSnake = () => {
+    snake.body = [
+            {x: 150, y: 100}, //Head
+            {x: 100, y: 100},
+            {x: 50, y: 100},
+            {x: 50, y: 100} //Tail
+        ];
+    snake.angle = 0;
+    snake.facingDirection = DIRECTIONS.RIGHT;
+    
+    rotateSpeed=0;
+    rotateTo=0;
+    moveSpeed=2;
+    nextTile = null;
+    newDirection = null;
+}

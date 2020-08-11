@@ -8,7 +8,10 @@ const DOMstrings = {
     gameOverModal: "game-over-modal",
     gameOverScore: "game-over-score",
     leaderboard: ".leaderboard",
-    active: "active"
+    lbAppleScore: 'lb-apple-score',
+    lbTrophyScore: 'lb-trophy-score',
+    active: "active",
+    playAgainBtn: "play-again-btn"
 };
 
 //GAME VARIABLES
@@ -24,6 +27,10 @@ window.onload = () => {
 
     initializeGameBoardValues(canvas);
 
+    gameLoop();
+}
+
+const gameLoop = () => {
     //Update Drawing
     let framesPerSecond = 60; //60;
 
@@ -34,9 +41,31 @@ window.onload = () => {
         drawSnake();
         drawScoreBoard();
         drawApple();
-
     }, 1000/framesPerSecond);
 }
+
+const playAgainBtnEl = document.getElementById(DOMstrings.playAgainBtn);
+playAgainBtnEl.addEventListener('click', () => {
+    console.log('Reset');
+    //Remove GameOverScreen
+    const gameOverModalEl = document.getElementById(DOMstrings.gameOverModal);
+    gameOverModalEl.classList.toggle(DOMstrings.active);
+
+    //Reset snake
+    resetSnake();
+
+    //Reset apple
+    resetApple();
+
+    //Reset scoreboard
+    resetScoreboard();
+
+    //Remove GameOver State
+    gameState.gameOver = false;
+
+    //Start gameLoop
+    gameLoop();
+});
 
 const gameOver = (interval) => {
     //Stop the game
