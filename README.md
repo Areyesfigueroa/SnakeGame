@@ -2,9 +2,9 @@
 
 Try it out! [Application Link](https://areyesfigueroa.github.io/SnakeGame/)
 
-![Snake Game App](./assets/snake-game.png)
-
 The application is based on the classic Snake Game.
+
+![Snake Game App](./assets/snake-game.png)
 
 ## Description
 

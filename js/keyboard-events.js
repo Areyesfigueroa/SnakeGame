@@ -5,9 +5,6 @@ const KEYCODES = {
     DOWN: 40
 }
 
-/*------------------
----- Controller ----
--------------------*/
 const isInputValid = (facingDirection, keyCode) => {
     if(facingDirection === DIRECTIONS.RIGHT) {
         return (keyCode === KEYCODES.UP || keyCode === KEYCODES.DOWN);
@@ -25,8 +22,6 @@ const isInputValid = (facingDirection, keyCode) => {
         return (keyCode === KEYCODES.LEFT || keyCode === KEYCODES.RIGHT);   
     }
 }
-
-//EVENT LISTENERS
 document.addEventListener('keydown', (event) => {
     
     //Can the snake move in this direction.

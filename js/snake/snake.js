@@ -19,15 +19,9 @@ const snake = {
     facingDirection: DIRECTIONS.RIGHT
 };
 
-const snakeHeadImage = new Image();
-snakeHeadImage.src = './assets/snake-sprite.png';
-
 let rotateSpeed=0;
 let rotateTo=0;
 let moveSpeed=5;
-
-let nextTile = null;
-let newDirection = null;
 
 //DRAW METHODS
 const drawSnake = () => {
@@ -51,6 +45,8 @@ const drawSnake = () => {
     drawSnakeHead(rotateSpeed, rotateTo);
 }
 
+const snakeHeadImage = new Image();
+snakeHeadImage.src = './assets/snake-sprite.png';
 const drawSnakeHead = (angleSpeed, destAngle) => {
     if(angleSpeed > 0) {
         // console.log("right");
@@ -129,9 +125,8 @@ const moveSnakeBody = () => {
      handleMovement(snake.body[0], snake.facingDirection);  
 }
 
+let newDirection = null;
 const rotateSnakeHead = () => {
-
-    // console.log(hasReachedNextTile());
 
     //Have reached
     if(newDirection && hasReachedNextTile() && !isSnakeRotating()) {

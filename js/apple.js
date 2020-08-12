@@ -5,7 +5,6 @@ const apple = {
 
 const appleImg = new Image();
 appleImg.src = './assets/apple.png';
-
 const drawApple = () => {
     if(hasAppleCollided(snake.body[0])) moveApple();
 
