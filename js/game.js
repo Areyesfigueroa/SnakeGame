@@ -15,10 +15,7 @@ const DOMstrings = {
 };
 
 //GAME VARIABLES
-const gameState = {
-    gameOver: false,
-    paused: false
-}
+let gameOverFlag = false;
 
 //MAIN METHOD
 window.onload = () => {
@@ -35,7 +32,7 @@ const gameLoop = () => {
     let framesPerSecond = 60; //60;
 
     let gameInterval = setInterval(() => {  
-        if(gameState.gameOver) gameOver(gameInterval);
+        if(gameOverFlag) gameOver(gameInterval);
 
         drawBoard(gameBoard.rows, gameBoard.columns);
         drawSnake();
@@ -61,7 +58,7 @@ playAgainBtnEl.addEventListener('click', () => {
     resetScoreboard();
 
     //Remove GameOver State
-    gameState.gameOver = false;
+    gameOverFlag = false;
 
     //Start gameLoop
     gameLoop();
@@ -80,5 +77,4 @@ const gameOver = (interval) => {
     //Load the gameOver modal.
     const gameOverModalEl = document.getElementById(DOMstrings.gameOverModal);
     gameOverModalEl.classList.toggle(DOMstrings.active);
-
 }

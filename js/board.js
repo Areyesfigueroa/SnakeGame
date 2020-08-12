@@ -41,8 +41,7 @@ const drawBoard = (rows, columns) => {
     //Check for out of bounds
     if(isOutOfBounds(snake.body[0])) {
         console.log("Game Over");
-        gameState.gameOver = true;
-        // moveSpeed = 0;
+        gameOverFlag = true;
     }
 
     //Draw Board
@@ -55,7 +54,7 @@ const drawBoard = (rows, columns) => {
             tile.style = tile.style === "#709E7C" ? "#B7E3BD":"#709E7C";
         }
         tile.posX = 0;
-        tile.style = startingStyle==="#B7E3BD" ? "#709E7C": "#B7E3BD";
+        tile.style = startingStyle==="#B7E3BD" ? "#709E7C":"#B7E3BD";
         startingStyle = tile.style;
     }
 }

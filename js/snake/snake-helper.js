@@ -70,3 +70,83 @@ const updateSnakeNextTileValues = () => {
             console.log(`${snake.facingDirection} is not correct`);
     }
 }
+
+const growSnakeBody = () => {
+    //Grow in the direction of the tail.
+    const tailParent = snake.body[snake.body.length - 2];
+    const tail = snake.body[snake.body.length - 1];
+
+        //If we are moving vertically
+        if(tailParent.x === tail.x && tailParent.y !== tail.y) {
+            //are we moving up or down. Check parent to know where. 
+            if(tailParent.y > tail.y) {
+                //Going Down
+                // console.log("Grow Up");
+                snake.body.push({x: tailParent.x, y: tailParent.y - snake.height});
+            };
+            if(tailParent.y < tail.y) {
+                //Going Up
+                // console.log("Grow Down");
+                snake.body.push({x: tailParent.x, y: tailParent.y + snake.height});
+            };
+        }
+    
+        //If we are moving horizontally
+        if(tailParent.y === tail.y && tailParent.x !== tail.x) {
+            //are we moving left or right. Check parent to know where. 
+            if(tailParent.x > tail.x) {
+                //Going Right
+                // console.log("Grow Left");
+                snake.body.push({x: tailParent.x - snake.width, y: tailParent.y});
+            };
+            if(tailParent.x < tail.x)  {
+                //Going Left
+                // console.log("Grow Right");
+                snake.body.push({x: tailParent.x + snake.width, y: tailParent.y});
+            }
+        }
+}
+
+const hasSnakeCollidedWithItself = () => {
+
+    //Ignore the head and initial body.
+    for(let i = 2; i < snake.body.length; i++) {
+
+        let bodyLeft = snake.body[i].x;
+        let bodyRight = snake.body[i].x + snake.width;
+        let bodyTop = snake.body[i].y;
+        let bodyBottom = snake.body[i].y + snake.height;
+
+        let headLeft = snake.body[0].x;
+        let headRight = snake.body[0].x + snake.width;
+        let headTop = snake.body[0].y;
+        let headBottom = snake.body[0].y + snake.height;
+
+        if(headRight > bodyLeft && headLeft < bodyRight && bodyTop === headTop) {
+            console.log("Horizontal Hit - " + i);
+            return true;
+        }
+
+        if(headBottom > bodyTop && headTop < bodyBottom && bodyLeft === headLeft) {
+            console.log("Vertical hit - " + i);
+            return true;
+        }
+    }
+}
+
+const resetSnake = () => {
+    snake.body = [
+            {x: 150, y: 100}, //Head
+            {x: 100, y: 100},
+            {x: 50, y: 100},
+            {x: 50, y: 100} //Tail
+        ];
+    snake.angle = 0;
+    snake.facingDirection = DIRECTIONS.RIGHT;
+    
+    rotateSpeed=0;
+    rotateTo=0;
+    moveSpeed=2;
+    nextTile = null;
+    newDirection = null;
+}
