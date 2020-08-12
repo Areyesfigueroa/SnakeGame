@@ -82,7 +82,7 @@ const drawSnakeBody = () => {
 
     for(let i = 0; i < snake.body.length; i++) {
 
-        canvasContext.fillStyle = "purple";
+        canvasContext.fillStyle = "green";
         canvasContext.fillRect(snake.body[i].x, snake.body[i].y, snake.width, snake.height);
     }
 }
