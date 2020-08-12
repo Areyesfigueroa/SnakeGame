@@ -52,20 +52,4 @@ document.addEventListener('keydown', (event) => {
         updateSnakeNextTileValues();
         
     }
-
-    //TESTING - Spacebar
-    if(event.keyCode === 32) {
-        // debugger;
-        console.log("Move");            
-        moveSpeed = moveSpeed ? 0:3;
-    }
-
-    //TESTING - Shift
-    if(event.keyCode === 16) {
-        //Move the apple
-        moveApple();
-
-        //Update Snake Body
-        // updateSnakeBodyValues();
-    }
 });
