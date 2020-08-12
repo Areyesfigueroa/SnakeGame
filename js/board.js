@@ -17,7 +17,6 @@ const tile= {
     size: 50
 }
 
-
 //GAME BOARD METHODS
 const initializeGameBoardValues = (canvas) => {
     //Initialize Board

@@ -107,7 +107,7 @@ const growSnakeBody = () => {
         }
 }
 
-const hasSnakeCollidedWithItself = () => {
+const hasSnakeBodyCollided = (obj) => {
 
     //Ignore the head and initial body.
     for(let i = 2; i < snake.body.length; i++) {
@@ -117,10 +117,10 @@ const hasSnakeCollidedWithItself = () => {
         let bodyTop = snake.body[i].y;
         let bodyBottom = snake.body[i].y + snake.height;
 
-        let headLeft = snake.body[0].x;
-        let headRight = snake.body[0].x + snake.width;
-        let headTop = snake.body[0].y;
-        let headBottom = snake.body[0].y + snake.height;
+        let headLeft = obj.x;
+        let headRight = obj.x + tile.size;
+        let headTop = obj.y;
+        let headBottom = obj.y + tile.size;
 
         if(headRight > bodyLeft && headLeft < bodyRight && bodyTop === headTop) {
             console.log("Horizontal Hit - " + i);
@@ -146,7 +146,7 @@ const resetSnake = () => {
     
     rotateSpeed=0;
     rotateTo=0;
-    moveSpeed=2;
+    moveSpeed=5;
     nextTile = null;
     newDirection = null;
 }

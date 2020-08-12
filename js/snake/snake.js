@@ -19,36 +19,35 @@ const snake = {
     facingDirection: DIRECTIONS.RIGHT
 };
 
-let image = new Image();
-image.src = './assets/snake-sprite.png';
+const snakeHeadImage = new Image();
+snakeHeadImage.src = './assets/snake-sprite.png';
 
 let rotateSpeed=0;
 let rotateTo=0;
-let moveSpeed=2;
+let moveSpeed=5;
 
 let nextTile = null;
 let newDirection = null;
 
 //DRAW METHODS
 const drawSnake = () => {
-    hasSnakeCollidedWithItself();
-    //Update Rotation 
+    
+    //Update Movement Values
     rotateSnakeHead();
-
     moveSnakeBody();
     moveSnakeTail();
-    drawSnakeBody();
 
     //Handle Collisions
     if(hasAppleCollided(snake.body[0])) {
         growSnakeBody();
     }
 
-    if(hasSnakeCollidedWithItself()) {
+    if(hasSnakeBodyCollided(snake.body[0])) {
         gameOverFlag = true;
     }
 
-    //Draw and Update Rotation
+    //Draw
+    drawSnakeBody();
     drawSnakeHead(rotateSpeed, rotateTo);
 }
 
@@ -74,8 +73,7 @@ const drawSnakeHead = (angleSpeed, destAngle) => {
     canvasContext.rotate(Math.PI/180 * snake.angle);
 
     //Head
-    // canvasContext.fillRect(-snake.width/2, -snake.height/2, snake.width, snake.height);
-    canvasContext.drawImage(image,-snake.width/2, -snake.height/2, snake.width, snake.height);
+    canvasContext.drawImage(snakeHeadImage,-snake.width/2, -snake.height/2, snake.width, snake.height);
     canvasContext.restore();
 }
 

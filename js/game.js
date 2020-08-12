@@ -43,7 +43,6 @@ const gameLoop = () => {
 
 const playAgainBtnEl = document.getElementById(DOMstrings.playAgainBtn);
 playAgainBtnEl.addEventListener('click', () => {
-    console.log('Reset');
     //Remove GameOverScreen
     const gameOverModalEl = document.getElementById(DOMstrings.gameOverModal);
     gameOverModalEl.classList.toggle(DOMstrings.active);

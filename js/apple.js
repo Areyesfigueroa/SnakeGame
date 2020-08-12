@@ -1,18 +1,24 @@
 const apple = {
-    x: 250,//550,
-    y: 100//300
+    x: 550,//550,
+    y: 300//300
 };
+
+const appleImg = new Image();
+appleImg.src = './assets/apple.png';
 
 const drawApple = () => {
     if(hasAppleCollided(snake.body[0])) moveApple();
 
-    drawTestCube(apple.x, apple.y, tile.size, tile.size);
+    canvasContext.drawImage(appleImg, apple.x, apple.y, tile.size, tile.size);
 }
 
 const moveApple = () => {
     apple.x = generateMultiple(tile.size, gameBoard.width);
     apple.y = generateMultiple(tile.size, gameBoard.height);
-    console.log(apple.x, apple.y);
+    
+    if(hasSnakeBodyCollided(apple)) {
+        moveApple();
+    }
 }
 
 const hasAppleCollided = (obj) => {
