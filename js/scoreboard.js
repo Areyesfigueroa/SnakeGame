@@ -5,10 +5,10 @@ const scoreboard = {
 
 const leaderboard = [];
 
-
 const incrementAppleScore = (score) => {
     scoreboard.appleScore += score;
 }
+
 const incrementTrophyScore = (score) => {
     scoreboard.trophyScore += score;
 }
@@ -17,6 +17,7 @@ const displayAppleScore = (value) => {
     const appleScoreEl = document.getElementById(DOMstrings.appleScore);
     appleScoreEl.textContent = value;
 }
+
 const displayTrophyScore = (value) => {
     const trophyScoreEl = document.getElementById(DOMstrings.trophyScore);
     trophyScoreEl.textContent = value;
@@ -72,8 +73,7 @@ const displayLeaderboard = () => {
 const drawScoreBoard = () => {
 
     if(!hasAppleCollided(snake.body[0])) return;
-
-    console.log('Update Score');
+    
     incrementAppleScore(1);
 
     if(scoreboard.appleScore > scoreboard.trophyScore) incrementTrophyScore(1);

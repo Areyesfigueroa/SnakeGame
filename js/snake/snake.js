@@ -31,7 +31,7 @@ let newDirection = null;
 
 //DRAW METHODS
 const drawSnake = () => {
-    
+    hasSnakeCollidedWithItself();
     //Update Rotation 
     rotateSnakeHead();
 
@@ -39,8 +39,13 @@ const drawSnake = () => {
     moveSnakeTail();
     drawSnakeBody();
 
+    //Handle Collisions
     if(hasAppleCollided(snake.body[0])) {
         growSnakeBody();
+    }
+
+    if(hasSnakeCollidedWithItself()) {
+        gameState.gameOver = true;
     }
 
     //Draw and Update Rotation
@@ -120,7 +125,6 @@ const moveSnakeBody = () => {
                snake.body[i] = Object.assign({}, parent);
            }
 
-           console.log('derp');
            snake.body[1] = Object.assign({}, head);
        }
 
@@ -201,6 +205,37 @@ const growSnakeBody = () => {
                 snake.body.push({x: tailParent.x + snake.width, y: tailParent.y});
             }
         }
+}
+
+const hasSnakeCollidedWithItself = () => {
+    //If the the snake head collides with itself.
+    /**
+     * Every Frame ensure the head has not collided with the body
+     */
+
+    //Ignore the initial body. Should never collide.
+    for(let i = 2; i < snake.body.length; i++) {
+
+        let bodyLeft = snake.body[i].x;
+        let bodyRight = snake.body[i].x + snake.width;
+        let bodyTop = snake.body[i].y;
+        let bodyBottom = snake.body[i].y + snake.height;
+
+        let headLeft = snake.body[0].x;
+        let headRight = snake.body[0].x + snake.width;
+        let headTop = snake.body[0].y;
+        let headBottom = snake.body[0].y + snake.height;
+
+        if(headRight > bodyLeft && headLeft < bodyRight && bodyTop === headTop) {
+            console.log("Horizontal Hit - " + i);
+            return true;
+        }
+
+        if(headBottom > bodyTop && headTop < bodyBottom && bodyLeft === headLeft) {
+            console.log("Vertical hit - " + i);
+            return true;
+        }
+    }
 }
 
 const resetSnake = () => {
