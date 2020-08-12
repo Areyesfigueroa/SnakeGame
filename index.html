@@ -1,11 +1,56 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <link href="https://fonts.googleapis.com/css2?family=Baloo+Tamma+2:wght@400;500&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="./snake-game.css"/>
         <title>Snake Game</title>
     </head>
     <body>
-        <h1>Snake Game</h1>
-        <canvas id="gameCanvas" width="800px" height="600px">
-        <script type="text/javascript" src="./snakeGame.js"></script>
+        
+        <h1 class="title">Snake Game</h1>
+        <div id='game'>
+            <div>
+                <div id="game-over-modal" class='modal'>
+                    <div class="game-over">
+                        <h1>YOUR SCORE: <span id="game-over-score">100</span></h1>
+                        <h3>Top 3 Leaderboard</h3>
+                        <ul class="leaderboard">
+                            <li>
+                                1.
+                                <img src="./assets/apple.png"/><span id="lb-apple-score-1">0</span>
+                                <img src="./assets/trophy.png"/><span id="lb-trophy-score-1">0</span>
+                            </li>
+                            <li>
+                                2.
+                                <img src="./assets/apple.png"/><span id="lb-apple-score-2">0</span>
+                                <img src="./assets/trophy.png"/><span id="lb-trophy-score-2">0</span>
+                            </li>
+                            <li>
+                                3.
+                                <img src="./assets/apple.png"/><span id="lb-apple-score-3">0</span>
+                                <img src="./assets/trophy.png"/><span id="lb-trophy-score-3">0</span>
+                            </li>
+                        </ul>
+                        <button id='play-again-btn'>Play Again?</button>
+                    </div>  
+                </div>
+                <div class='scoreboard'>
+                    <img src="./assets/apple.png"/><span id="apple-score">0</span>
+                    <img src="./assets/trophy.png"/><span id="trophy-score">0</span>
+                </div>
+                <canvas id="game-canvas" width="800px" height="600px"></canvas>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="./js/utils.js"></script>
+        <script type="text/javascript" src="./js/board.js"></script>
+        <script type="text/javascript" src="./js/apple.js"></script>
+        <script type="text/javascript" src="./js/snake/snake-helper.js"></script>
+        <script type="text/javascript" src="./js/snake/snake.js"></script>
+        <script type="text/javascript" src="./js/scoreboard.js"></script>
+        <script type="text/javascript" src="./js/game.js"></script>
+        <script type="text/javascript" src="./js/keyboard-events.js"></script>
     </body>
 </html>
